@@ -1,113 +1,203 @@
-import Image from "next/image";
+"use client";
+
+import React, { useState } from "react";
+import { ColDef } from "ag-grid-community";
+import { AgGridReact } from "ag-grid-react";
+
+// Row Data Interface
+interface IRow {
+  name: string;
+  floor: number;
+  area: number;
+  rooms: number;
+  price: number;
+  exitPrice: number;
+  rent: number;
+  newRent: number;
+  isVacant: boolean;
+  uWert: number;
+}
+
+// Row Data: The data to be displayed.
+const rowData: IRow[] = [
+  {
+    name: "Meine Wohnung 1",
+    floor: 1,
+    area: 70,
+    rooms: 1,
+    price: 300000,
+    exitPrice: 500000,
+    rent: 700,
+    newRent: 1200,
+    isVacant: false,
+    uWert: 0.7,
+  },
+  {
+    name: "Meine Wohnung 2",
+    floor: 2,
+    area: 80,
+    rooms: 2,
+    price: 400000,
+    exitPrice: 600000,
+    rent: 800,
+    newRent: 1300,
+    isVacant: false,
+    uWert: 0.9,
+  },
+  {
+    name: "Meine Wohnung 3",
+    floor: 3,
+    area: 90,
+    rooms: 3,
+    price: 500000,
+    exitPrice: 700000,
+    rent: 900,
+    newRent: 1400,
+    isVacant: false,
+    uWert: 0.8,
+  },
+  {
+    name: "Meine Wohnung 4",
+    floor: 5,
+    area: 110,
+    rooms: 4,
+    price: 600000,
+    exitPrice: 800000,
+    rent: 1100,
+    newRent: 1700,
+    isVacant: true,
+    uWert: 0.9,
+  },
+];
+
+// Column Definitions: Defines & controls grid columns.
+const colDefs: ColDef<IRow>[] = [
+  {
+    field: "name",
+    headerName: "Name",
+    filter: "agTextColumnFilter",
+    editable: true,
+    cellEditor: "agTextCellEditor",
+  },
+  {
+    field: "floor",
+    headerName: "Floor",
+    filter: "agNumberColumnFilter",
+    editable: true,
+  },
+  {
+    field: "area",
+    headerName: "Area",
+    filter: "agNumberColumnFilter",
+    editable: true,
+  },
+  {
+    field: "rooms",
+    headerName: "Rooms",
+    filter: "agNumberColumnFilter",
+    editable: true,
+  },
+  {
+    field: "price",
+    headerName: "Price ()",
+    filter: "agNumberColumnFilter",
+    editable: true,
+  },
+  {
+    field: "exitPrice",
+    headerName: "Exit price",
+    filter: "agNumberColumnFilter",
+    editable: true,
+  },
+  {
+    field: "rent",
+    headerName: "Rent",
+    filter: "agNumberColumnFilter",
+    editable: true,
+  },
+  {
+    field: "newRent",
+    headerName: "New rent",
+    filter: "agNumberColumnFilter",
+    editable: true,
+    headerClass: "bg-red-200",
+  },
+  {
+    field: "isVacant",
+    headerName: "Is vacant",
+    filter: "agBooleanColumnFilter",
+    editable: true,
+    cellEditor: "agBooleanCellEditor",
+    // cellClassRules is used to apply conditional classes to cell
+    // https://www.ag-grid.com/react-data-grid/cell-styles/#cell-class-rules
+    // cellClassRules: {
+    //   "bg-green-500": (params) => params.value,
+    //   "bg-red-500": (params) => !params.value,
+    // },
+  },
+  {
+    field: "uWert",
+    headerName: "U-Wert",
+    filter: "agNumberColumnFilter",
+    // cellClass is used to apply classes to cell
+    // https://www.ag-grid.com/react-data-grid/cell-styles/#reference-styling-cellClass
+    // cellClass: (p) =>
+    //   p.data?.uWert && p.data?.uWert >= 0.9 ? "text-green-500" : null,
+  },
+];
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+  const [quickFilterText, setQuickFilterText] = useState<string>("");
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+  return (
+    <main className="flex flex-col m-10">
+      <div className="m-4">
+        <input
+          type="text"
+          id="quickFilter"
+          className="p-2 rounded-md"
+          onChange={(event) => setQuickFilterText(event.target.value)}
+          placeholder="Type text to filter..."
         />
       </div>
+      <AgGridReact
+        // className can be used to apply the ag-grid theme
+        className="ag-theme-quartz-dark"
+        containerStyle={{ height: "500px", width: "100%" }}
+        // domLayout='autoHeight'
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+        rowData={rowData}
+        columnDefs={colDefs}
+        // Simple attributes
+        rowSelection="multiple"
+        // quickFilterText is used to filter rows based on text
+        // https://www.ag-grid.com/react-data-grid/filter-quick/
+        quickFilterText={quickFilterText}
+        // rowClass is used to apply classes all rows
+        // https://www.ag-grid.com/react-data-grid/row-styles/#reference-styling-rowClass
+        // rowClass="bg-white"
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+        // https://www.ag-grid.com/react-data-grid/row-styles/#reference-styling-getRowClass
+        // getRowClass={(params) => {
+        //   return params.data?.uWert && params.data?.uWert >= 0.9
+        //     ? "bg-green-500"
+        //     : null;
+        // }}
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
+        // rowClassRules is used to apply conditional classes to row
+        // https://www.ag-grid.com/react-data-grid//grid-options/#reference-styling-rowClassRules
+        // rowClassRules={{
+        //  "bg-red-500": (p) => p.data?.uWert && p.data?.uWert >= 0.9,
+        //  "bg-cyan-700": (p) => p.data?.uWert && p.data?.uWert < 0.9,
+        // }}
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+        // onCellEditingStopped is used to capture cell editing stopped event
+        // it can be used to trigger the update of the data in the backend
+        // https://www.ag-grid.com/react-data-grid//grid-events/#reference-editing-cellEditingStopped
+        onCellEditingStopped={(event) => {
+          console.log("Cell Editing Stopped: ", event.value);
+        }}
+      />
     </main>
   );
 }
