@@ -2,19 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
 /* custom ag-grid theme using tailwind classes */
 /* https://www.ag-grid.com/react-data-grid/global-style-customisation/ */
 /* set the background color of many elements across the grid */
@@ -24,9 +11,4 @@
 /* set the text color and weight of the header row */
 .ag-header-cell-label {
   @apply text-red-500 font-bold
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background:  rgb(var(--background-start-rgb));
 }
